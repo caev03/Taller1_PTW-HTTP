@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -40,7 +41,7 @@ public class HttpClient {
 		return null;
 	}
 	
-	public File processRequestApache(String URL, String fileName)
+	public File processRequestApache(String URL, String fileName, String host, String message)
 	{
 		try
 		{
@@ -60,6 +61,9 @@ public class HttpClient {
 				writer.println(line);
 			}
 			writer.close();
+			ArrayList historic = RequestProcessor.getInstance().getHistoric();
+			historic.add(host + " - " + message + " - " + fileName);
+			RequestProcessor.getInstance().setHistoric(historic);
 			return tempFile;
 			
 		}

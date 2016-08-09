@@ -1,0 +1,19 @@
+1. ¿Que pasa si cambia la versión del protocolo a HTTP/1.0?
+
+Para las peticiones hechas a google y a youtube aparece un encabezado adicional "Transfer-Encoding: chunked" 
+además de cambiar la versión del protocolo de la primera linea de la prueba.
+
+Para las peticiones hechas a uniandes se muestra en el encabezado de conexión para las pruebas realizadas 
+en HTTP/1.0 "closed" y para las peticiones en HTTP/1.1 aparece "Keep-Alive"
+
+2. ¿Por qué para hacer la petición a la Universidad de los andes necesitamos poner el
+Host en el encabezado?
+
+Cuando un servidor está detrás de un proxy o un virtual host, es necesario indicar en el
+encabezado de la petición el host
+
+3. ¿Que pasa si no ponemos Host en el encabezado de la petición a la universidad de los
+Andes?
+
+Cuando se esta dentro de la red de la universidad de igual forma puede acceder al recurso solicitado, 
+cuando se encuentra por fuera de la red no es posible acceder a este.

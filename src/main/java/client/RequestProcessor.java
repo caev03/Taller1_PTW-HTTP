@@ -32,4 +32,8 @@ public class RequestProcessor{
 	public ArrayList<String> getHistoric(){
 		return historic;
 	}
+	
+	public void setHistoric(ArrayList<String> abc){
+		historic = abc;
+	}
 }

@@ -45,6 +45,7 @@ public class ClientUI2 extends JFrame implements ListSelectionListener{
         fileNameText = new JTextField(25);
         
         JButton requestButton = new JButton("Request");
+        JButton requestApacheButton = new JButton("Apache Request");
         requestButton.addActionListener(new ActionListener() {
            public void actionPerformed(ActionEvent e) {     
 			  String host = hostText.getText().toLowerCase();
@@ -67,10 +68,7 @@ public class ClientUI2 extends JFrame implements ListSelectionListener{
               try 
               {
 				HttpClient client = new HttpClient(hostedwoport, port);
-				//File file = client.processRequest(requestMessage, hostedwoport, fileName);
-				// En caso de quere correr con apache comente la linea anterior y descomente la siguiente linea.
-				File file = client.processRequestApache(hoster, fileName);
-				System.out.println(file);
+				File file = client.processRequest(requestMessage, hostedwoport, fileName);
 				Desktop.getDesktop().open(file.getAbsoluteFile());
 				DefaultListModel model = new DefaultListModel<>();
 				ArrayList a = RequestProcessor.getInstance().getHistoric();
@@ -84,6 +82,43 @@ public class ClientUI2 extends JFrame implements ListSelectionListener{
               }
            }
         });
+        requestApacheButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {     
+ 			  String host = hostText.getText().toLowerCase();
+ 			  String hoster = hostText.getText().toLowerCase();
+ 			  if(host.startsWith("http"))
+ 			  {
+ 				  host = host.substring(host.indexOf("//")+2);
+ 			  }
+ 			  String hosted = host.substring(0, host.indexOf("/"));
+ 			  int port = 80;
+ 			  String hostedwoport = hosted;
+ 			  if(hosted.contains(":"))
+ 			  {
+ 				  port = Integer.parseInt(hosted.substring(hosted.indexOf(":")+1));
+ 				  hostedwoport = hosted.substring(0, hosted.indexOf(":"));
+ 			  }
+ 			  String fileName = fileNameText.getText();
+ 			  String requestMessage = "GET "+host.substring(hosted.length());
+ 			  
+               try 
+               {
+ 				HttpClient client = new HttpClient(hostedwoport, port);
+ 				File file = client.processRequestApache(hoster, fileName, hostedwoport,requestMessage);
+ 				System.out.println(file);
+ 				Desktop.getDesktop().open(file.getAbsoluteFile());
+ 				DefaultListModel model = new DefaultListModel<>();
+ 				ArrayList a = RequestProcessor.getInstance().getHistoric();
+ 				for (int i = 0; i < a.size(); i++) 
+ 				{
+ 					model.add(i, a.get(i));
+ 				}
+ 				jlist.setModel(model);
+               } catch (Exception e1) {
+ 					e1.printStackTrace();
+               }
+            }
+         });
         JScrollPane listScroller = new JScrollPane(jlist);
         listScroller.setPreferredSize(new Dimension(250, 300));
         panel.add(hostLabel);
@@ -91,6 +126,7 @@ public class ClientUI2 extends JFrame implements ListSelectionListener{
         panel.add(fileLabel);
         panel.add(fileNameText);
         panel.add(requestButton);
+        panel.add(requestApacheButton);
         panel.add(listScroller);
         
         this.add(panel);
@@ -106,13 +142,16 @@ public class ClientUI2 extends JFrame implements ListSelectionListener{
 	@Override
 	public void valueChanged(ListSelectionEvent e) 
 	{
-		try 
+		if(jlist.getSelectedIndex()!=-1)
 		{
-			String ruta = "descarga/"+RequestProcessor.getInstance().getHistoric().get(jlist.getSelectedIndex()).split(" - ")[2];
-			Desktop.getDesktop().open(new File(ruta).getAbsoluteFile());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			try 
+			{
+				String ruta = "descarga/"+RequestProcessor.getInstance().getHistoric().get(jlist.getSelectedIndex()).split(" - ")[2];
+				Desktop.getDesktop().open(new File(ruta).getAbsoluteFile());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 
